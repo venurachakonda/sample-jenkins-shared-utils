@@ -33,6 +33,9 @@ def call(body) {
                }
            }
            stage('Deliver') {
+                when {
+                    expression { pipelineParams.branch == 'master'}
+                } 
                steps {
                    sh './jenkins/scripts/deliver.sh'
                }
