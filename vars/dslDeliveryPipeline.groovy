@@ -13,9 +13,17 @@ def call(body) {
            }
        }
        stages {
+           stage('Initialize') {
+              steps {
+                script {
+                  loadValuesYaml()
+                }
+              }
+           }
            stage('Build') {
 
                steps {
+                   sh 'printenv'
                    sh 'mvn -B -DskipTests clean package'
                }
            }
@@ -43,3 +51,23 @@ def call(body) {
        }
     }
 }
+
+def loadValuesYaml(){
+    def valuesYaml = readYaml (file: '/var/lib/jenkins/devops/env_properties.yaml')
+    keys= props.keySet()
+    for(key in keys) {
+        value = props["${key}"]
+        env."${key}" = "${value}"
+    }    
+    //return valuesYaml;
+}
+
+/*
+def loadEnvironmentVariables(path){
+    def props = readProperties  file: path
+    keys= props.keySet()
+    for(key in keys) {
+        value = props["${key}"]
+        env."${key}" = "${value}"
+    }
+}*/
