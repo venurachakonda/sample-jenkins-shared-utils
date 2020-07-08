@@ -53,7 +53,7 @@ def call(body) {
 }
 
 def loadValuesYaml(){
-    def valuesYaml = readYaml (file: '/var/lib/jenkins/devops/env_properties.yaml')
+    def valuesYaml = readYaml (file: '/var/jenkins_home/devops/env_properties.yaml')
     keys= props.keySet()
     for(key in keys) {
         value = props["${key}"]
