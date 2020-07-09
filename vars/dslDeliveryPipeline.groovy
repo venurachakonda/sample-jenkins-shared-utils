@@ -18,7 +18,6 @@ def call(body) {
                 script {
                   loadEnvironmentVariables()
                 }
-                sh 'printenv'
               }
            }
            stage('Build') {
@@ -28,8 +27,7 @@ def call(body) {
                steps {
                    sh 'printenv'
                    sh '''
-                   echo "failing herer"
-                   echo "DEV KAFKA: ${{ENV}_KAFKA_HOST_IP}"
+                   echo "DEV KAFKA: ${ENV.KAFKA_HOST_IP}"
                    '''                   
                    sh 'mvn -B -DskipTests clean package'
                }
@@ -43,7 +41,7 @@ def call(body) {
                }
                steps {
                    sh '''
-                   echo "PROD DB_HOST: "${{ENV}_DB_HOST}"
+                   echo "PROD DB_HOST: ${ENV.DB_HOST}"
                    '''                
                    sh 'mvn test'
 
@@ -67,12 +65,10 @@ def call(body) {
 }
 
 def loadEnvironmentVariables(){
-    def props = readProperties (file: '/var/jenkins_home/devops/env.properties')
+    def props = readYaml (file: '/var/jenkins_home/devops/env_properties.yaml')
     keys= props.keySet()
     for(key in keys) {
         value = props["${key}"]
-        println key
-        println value
         env."${key}" = "${value}"
     }
 }
