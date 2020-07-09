@@ -27,7 +27,7 @@ def call(body) {
                steps {
                    sh 'printenv'
                    sh '''
-                   DEV["KAFKA_HOST_IP"]
+                   echo ${DEV["KAFKA_HOST_IP"]}
                    echo "me"
                    '''                   
                    sh 'mvn -B -DskipTests clean package'
