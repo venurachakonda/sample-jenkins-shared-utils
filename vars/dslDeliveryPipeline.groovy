@@ -65,7 +65,7 @@ def call(body) {
 }
 
 def loadEnvironmentVariables(){
-    def props = readYaml (file: '/var/jenkins_home/devops/env_properties.yaml')
+    def props = readProperties (file: '/var/jenkins_home/devops/env.properties')
     keys= props.keySet()
     for(key in keys) {
         value = props["${key}"]
