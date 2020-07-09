@@ -14,9 +14,6 @@ def call(body) {
        }
        stages {
            stage('Build') {
-               environment {
-                ENV = "dev"
-               }
                steps {
                    script {
                     loadEnvironmentVariables('dev')
