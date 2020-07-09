@@ -71,6 +71,7 @@ def loadEnvironmentVariables(){
     keys= props.keySet()
     for(key in keys) {
         value = props["${key}"]
+        println props["${key}"]
         println value
         env."${key}" = "${value}"
     }
