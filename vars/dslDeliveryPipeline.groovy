@@ -13,22 +13,17 @@ def call(body) {
            }
        }
        stages {
-           stage('Initialize') {
-              steps {
-                script {
-                  loadEnvironmentVariables()
-                }
-              }
-           }
            stage('Build') {
                environment {
-                ENV = "DEV"
+                ENV = "dev"
                }
                steps {
+                   script {
+                    loadEnvironmentVariables("/var/jenkins_home/devops/${ENV}.properties")
+                   }
                    sh 'printenv'
                    sh '''
-                   echo ${DEV["KAFKA_HOST_IP"]}
-                   echo "me"
+                   echo "kafka host in $ENV: ${KAFKA_HOST_IP}"
                    '''                   
                    sh 'mvn -B -DskipTests clean package'
                }
@@ -38,11 +33,16 @@ def call(body) {
                   expression { pipelineParams.unitTests == true }
                }
                environment {
-                ENV = "PROD"
+                ENV = "prod"
                }
                steps {
+                   script {
+                    loadEnvironmentVariables("/var/jenkins_home/devops/${ENV}.properties")
+                   }                
                    sh '''
-                   echo "PROD DB_HOST: ${ENV['DB_HOST']}"
+                   printenv
+                   echo "kafka host in $ENV: ${KAFKA_HOST_IP}"
+                   echo "$DB_HOST"
                    '''                
                    sh 'mvn test'
 
@@ -65,6 +65,7 @@ def call(body) {
     }
 }
 
+/*
 def loadEnvironmentVariables(){
     def props = readYaml (file: '/var/jenkins_home/devops/env_properties.yaml')
     keys= props.keySet()
@@ -74,3 +75,13 @@ def loadEnvironmentVariables(){
     }
 }
 
+*/
+
+def loadEnvironmentVariables(path){
+    def props = readProperties (file: path)
+    keys= props.keySet()
+    for(key in keys) {
+        value = props["${key}"]
+        env."${key}" = "${value}"
+    }
+}
