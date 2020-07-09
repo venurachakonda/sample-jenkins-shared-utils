@@ -16,23 +16,35 @@ def call(body) {
            stage('Initialize') {
               steps {
                 script {
-                  loadValuesYaml()
+                  loadEnvironmentVariables()
                 }
               }
            }
            stage('Build') {
-
+               environment {
+                ENV = "DEV"
+               }
                steps {
                    sh 'printenv'
+                   sh '''
+                   echo DEV KAFKA: ${ENV.KAFKA_HOST_IP}
+                   '''                   
                    sh 'mvn -B -DskipTests clean package'
                }
            }
            stage('Test') {
                when {
                   expression { pipelineParams.unitTests == true }
-               }            
+               }
+               environment {
+                ENV = "PROD"
+               }
                steps {
+                   sh '''
+                   echo PROD DB_HOST: ${ENV.DB_HOST}
+                   '''                
                    sh 'mvn test'
+
                }
                post {
                    always {
@@ -52,22 +64,12 @@ def call(body) {
     }
 }
 
-def loadValuesYaml(){
-    def valuesYaml = readYaml (file: '/var/jenkins_home/devops/env_properties.yaml')
-    keys= valuesYaml.keySet()
-    for(key in keys) {
-        value = valuesYaml["${key}"]
-        env."${key}" = "${value}"
-    }    
-    //return valuesYaml;
-}
-
-/*
-def loadEnvironmentVariables(path){
-    def props = readProperties  file: path
+def loadEnvironmentVariables(){
+    def props = readYaml (file: '/var/jenkins_home/devops/env_properties.yaml')
     keys= props.keySet()
     for(key in keys) {
         value = props["${key}"]
         env."${key}" = "${value}"
     }
-}*/
+}
+
