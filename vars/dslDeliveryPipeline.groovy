@@ -28,7 +28,8 @@ def call(body) {
                steps {
                    sh 'printenv'
                    sh '''
-                   echo DEV KAFKA: ${ENV.KAFKA_HOST_IP}
+                   echo "failing herer"
+                   echo "DEV KAFKA: ${{ENV}_KAFKA_HOST_IP}"
                    '''                   
                    sh 'mvn -B -DskipTests clean package'
                }
@@ -42,7 +43,7 @@ def call(body) {
                }
                steps {
                    sh '''
-                   echo PROD DB_HOST: ${ENV.DB_HOST}
+                   echo "PROD DB_HOST: "${{ENV}_DB_HOST}"
                    '''                
                    sh 'mvn test'
 
