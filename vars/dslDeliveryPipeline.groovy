@@ -18,6 +18,7 @@ def call(body) {
                 script {
                   loadEnvironmentVariables()
                 }
+                sh 'printenv'
               }
            }
            stage('Build') {
@@ -69,6 +70,7 @@ def loadEnvironmentVariables(){
     keys= props.keySet()
     for(key in keys) {
         value = props["${key}"]
+        println value
         env."${key}" = "${value}"
     }
 }
