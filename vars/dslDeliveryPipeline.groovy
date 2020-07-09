@@ -14,9 +14,12 @@ def call(body) {
        }
        stages {
            stage('Build') {
+               environment {
+                ENV = "dev"
+               }            
                steps {
                    script {
-                    loadEnvironmentVariables('dev')
+                    loadEnvironmentVariables("/var/jenkins_home/devops/${ENV}.properties")
                    }
                    sh 'printenv'
                    sh '''
@@ -34,7 +37,7 @@ def call(body) {
                }
                steps {
                    script {
-                    loadEnvironmentVariables("${ENV}")
+                    loadEnvironmentVariables("/var/jenkins_home/devops/${ENV}.properties")
                    }                
                    sh '''
                    printenv
@@ -74,8 +77,8 @@ def loadEnvironmentVariables(){
 
 */
 
-def loadEnvironmentVariables(env){
-    def props = readProperties (file: "/var/jenkins_home/devops/${env}.properties")
+def loadEnvironmentVariables(path){
+    def props = readProperties (file: path)
     keys= props.keySet()
     for(key in keys) {
         value = props["${key}"]
