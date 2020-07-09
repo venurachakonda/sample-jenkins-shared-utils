@@ -19,7 +19,7 @@ def call(body) {
                }
                steps {
                    script {
-                    loadEnvironmentVariables("dev")
+                    loadEnvironmentVariables('dev')
                    }
                    sh 'printenv'
                    sh '''
